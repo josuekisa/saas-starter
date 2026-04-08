@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useState, useEffect } from "react";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard" },
@@ -13,6 +14,9 @@ const navItems = [
 export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   async function handleLogout() {
     const supabase = createClient();
@@ -31,7 +35,7 @@ export default function Sidebar() {
             key={item.href}
             href={item.href}
             className={`px-4 py-2 rounded-md text-sm transition-colors ${
-              pathname === item.href
+              mounted && pathname === item.href
                 ? "bg-zinc-700 text-white"
                 : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
             }`}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { FaGithub } from "react-icons/fa";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,12 +20,28 @@ export default function LoginPage() {
 
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     if (error) {
       setError("Email ou mot de passe incorrect.");
       setLoading(false);
     } else {
       router.push("/dashboard");
+    }
+  }
+
+  async function signInWithGithub() {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "github",
+      options: {
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      },
+    });
+    if (error) {
+      setError("Erreur lors de la connexion avec GitHub.");
     }
   }
 
@@ -73,6 +90,14 @@ export default function LoginPage() {
             className="mt-2 bg-white text-zinc-900 font-semibold rounded-lg px-4 py-2.5 text-sm hover:bg-zinc-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Connexion..." : "Se connecter"}
+          </button>
+          <button
+            type="button"
+            onClick={signInWithGithub}
+            className="mt-2 w-full flex items-center justify-center gap-2 bg-zinc-800 text-white font-semibold rounded-lg px-4 py-2.5 text-sm hover:bg-zinc-600 transition-colors"
+          >
+            <FaGithub className="text-base" />
+            Se connecter avec GitHub
           </button>
         </form>
 
