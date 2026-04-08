@@ -60,7 +60,6 @@ function Feedback({
 
 export default function SettingsPage() {
   const router = useRouter();
-  const supabase = createClient();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [firstName, setFirstName] = useState("");
@@ -90,6 +89,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     async function load() {
+      const supabase = createClient();
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -116,6 +116,7 @@ export default function SettingsPage() {
     e.preventDefault();
     setProfileLoading(true);
     setProfileMsg(null);
+    const supabase = createClient();
 
     const { error } = await supabase
       .from("profiles")
@@ -150,6 +151,7 @@ export default function SettingsPage() {
     }
 
     setPasswordLoading(true);
+    const supabase = createClient();
 
     const { error } = await supabase.auth.updateUser({ password: newPassword });
 
@@ -168,6 +170,7 @@ export default function SettingsPage() {
     if (deleteConfirm !== "SUPPRIMER") return;
     setDeleteLoading(true);
     setDeleteMsg(null);
+    const supabase = createClient();
 
     await supabase.auth.signOut();
     router.push("/register");
